@@ -1,7 +1,12 @@
+import * as fs from 'fs';
 import { SessionData } from '../types/catalog';
 
 const store = new Map<string, SessionData>();
-const TTL_MS = parseInt(process.env.SESSION_TTL_MINUTES ?? '30', 10) * 60 * 1000;
+const TTL_MS = Math.max(5, parseInt(process.env.SESSION_TTL_MINUTES ?? '30', 10)) * 60 * 1000;
+
+function unlinkFile(filePath: string | undefined): void {
+  if (filePath) fs.unlink(filePath, () => {});
+}
 
 export function setSession(id: string, data: SessionData): void {
   store.set(id, data);
@@ -14,6 +19,7 @@ export function getSession(id: string): SessionData | undefined {
 export function deleteSession(id: string): void {
   const session = store.get(id);
   if (session) {
+    unlinkFile(session.filePath);
     store.delete(id);
   }
 }
@@ -30,6 +36,7 @@ setInterval(() => {
   const now = Date.now();
   for (const [id, data] of store.entries()) {
     if (now - data.createdAt > TTL_MS) {
+      unlinkFile(data.filePath);
       store.delete(id);
     }
   }

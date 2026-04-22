@@ -13,7 +13,7 @@ export function AppHeader() {
             <FileText className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900 leading-tight">Catalog Processing Tool</h1>
+            <h1 className="text-lg font-bold text-gray-900 leading-tight">Catalog Processing Portal</h1>
             <p className="text-xs text-gray-500">SAP Business Network — CIF 3.0 &amp; CMS Realms</p>
           </div>
           <div className="ml-auto flex items-center gap-4">

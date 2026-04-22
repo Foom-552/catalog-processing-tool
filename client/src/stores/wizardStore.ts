@@ -5,7 +5,7 @@ import {
 } from '../types/catalog';
 
 interface WizardState {
-  step: 1 | 2 | 3 | 4;
+  step: 0 | 1 | 2 | 3 | 4;
   sessionId: string | null;
   uploadResponse: UploadResponse | null;
   validationResult: ValidationResult | null;
@@ -15,7 +15,7 @@ interface WizardState {
   selectedOutput: OutputFormat;
   aribaConfig: AribaPostConfig;
 
-  setStep: (step: 1 | 2 | 3 | 4) => void;
+  setStep: (step: 0 | 1 | 2 | 3 | 4) => void;
   setSessionId: (id: string) => void;
   setUploadResponse: (r: UploadResponse) => void;
   setValidationResult: (r: ValidationResult | null) => void;
@@ -40,7 +40,7 @@ const defaultAribaConfig: AribaPostConfig = {
 };
 
 export const useWizardStore = create<WizardState>((set) => ({
-  step: 1,
+  step: 0,
   sessionId: null,
   uploadResponse: null,
   validationResult: null,

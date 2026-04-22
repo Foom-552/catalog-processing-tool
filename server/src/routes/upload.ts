@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { upload } from '../middleware/multerConfig';
+import { uploadLimiter } from '../middleware/rateLimiter';
 import { detectTemplate } from '../services/templateDetector';
 import { parseCifText } from '../services/cifParser';
 import { parseExcel } from '../services/excelParser';
@@ -8,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 
-router.post('/', upload.single('file'), async (req: Request, res: Response) => {
+router.post('/', uploadLimiter, upload.single('file'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ error: 'No file uploaded' });
     return;

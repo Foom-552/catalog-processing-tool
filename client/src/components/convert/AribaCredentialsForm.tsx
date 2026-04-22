@@ -45,7 +45,7 @@ export function AribaCredentialsForm() {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-gray-800">Ariba Connection Details</h3>
+      <h3 className="text-sm font-semibold text-gray-800">SBN Connection Details</h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="From ANID (Supplier)" error={errors.fromANID?.message}>

@@ -47,7 +47,7 @@ export function ConvertStep() {
   });
 
   const buttonLabel = selectedOutput === 'ARIBA_POST'
-    ? 'Post to Ariba'
+    ? 'Post to SAP Business Network'
     : selectedOutput === 'CXML_FILE'
       ? 'Download Transaction File'
       : 'Generate File';

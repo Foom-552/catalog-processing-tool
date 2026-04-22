@@ -14,7 +14,7 @@ export function ResultStep() {
     <div>
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900">
-          {selectedOutput === 'ARIBA_POST' ? 'Ariba Submission Result' : 'File Ready'}
+          {selectedOutput === 'ARIBA_POST' ? 'SBN Submission Result' : 'File Ready'}
         </h2>
         <p className="text-sm text-gray-500 mt-1">
           {selectedOutput === 'ARIBA_POST'

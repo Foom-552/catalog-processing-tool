@@ -5,7 +5,7 @@ import { CopyableCodeBlock } from './CopyableCodeBlock';
 
 const ERROR_HINTS: Record<string, string> = {
   '406': 'The cXML document failed DTD validation. Check the raw response for the specific element error.',
-  '450': 'Ariba could not route this request. Check that the supplier–buyer relationship is established on SAP Business Network and that the To ANID and Shared Secret are correct.',
+  '450': 'SAP Business Network could not route this request. Check that the supplier–buyer relationship is established on SAP Business Network and that the To ANID and Shared Secret are correct.',
   '401': 'Authentication failed. Verify the From ANID and Shared Secret match your SAP Business Network credentials.',
   '403': 'Access denied. Your supplier account may not have permission to upload to this buyer.',
   '461': 'Invalid commodity code. Use a two-digit UNSPSC segment code (e.g. 52).',
@@ -111,7 +111,7 @@ export function AribaResponsePanel({ result }: Props) {
             className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 font-medium"
           >
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {expanded ? 'Hide' : 'Show'} raw Ariba response
+            {expanded ? 'Hide' : 'Show'} raw SBN response
           </button>
           {expanded && (
             <div className="mt-2">
