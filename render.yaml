@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: catalog-processing-tool
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: node server/dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: SESSION_TTL_MINUTES
+        value: "30"
+      - key: CXML_FETCH_TIMEOUT_MS
+        value: "5000"

@@ -1,0 +1,18 @@
+﻿CIF_I_V3.0
+CHARSET:UTF-8
+LOADMODE:F
+CODEFORMAT:UNSPSC_V13.5
+CURRENCY:USD
+SUPPLIERID_DOMAIN:NetworkID
+ITEMCOUNT:5
+TIMESTAMP:
+UNUOM:TRUE
+COMMENTS:Any comments can go here.
+FIELDNAMES: Supplier ID,Supplier Part ID,Manufacturer Part ID,Item Description,SPSC Code,Unit Price,Unit of Measure,Lead Time,Manufacturer Name,Supplier URL,Manufacturer URL,Market Price,Supplier Part Auxiliary ID,Language,Currency,Short Name,Image ,Thumbnail 
+DATA
+AN09067477712-T,2772882,TTSIBM412CID,4-Line System Phone with Headset and Caller ID,43191504,45.24,EA,1,Intellidata,http://www.idg.com/2772967,,50.24,,en_US,USD,4-Line Phone,http://www.idg.com/2772967/img.gif,http://www.idg.com/2772967/tmb.gif
+AN09067477712-T,2772967,IDG076450049X,Excel 97 for Dummies Quick Reference Book,55101509,19.99,EA,1,IDG Books Worldwide,http://www.idg.com/2772967,,22.00,,en_US,USD,Excel 97 for Dummies,http://www.idg.com/2772967/img.gif,http://www.idg.com/2772967/tmb.gif
+AN09067477712-T,2772276,IDG076458722,"Blue Ballpoint Pens, Disposable",44121704,5.45,DZN,1,Bic,http://www.idg.com/2772967,,7.00,,en_US,USD,Blue Ballpoint Pens,http://www.idg.com/2772967/img.gif,http://www.idg.com/2772967/tmb.gif
+AN09067477712-T,2772981,IDG076450052X,"Manilla Folders, Tabbed 3 Position",44122011,19.99,GRO,1,Mead,http://www.idg.com/2772981,,22.00,,en_US,USD,Manilla Folders,http://www.idg.com/2772981/img.gif,http://www.idg.com/2772981/tmb.gif
+AN09067477712-T,2772985,IDG07645762,"Stapler, Swingline 405, Black",44121615,4.95,EA,1,Swingline,http://www.idg.com/2772981,,6.29,,en_US,USD,Standard Stapler,http://www.idg.com/2772981/img.gif,http://www.idg.com/2772981/tmb.gif
+ENDOFDATA

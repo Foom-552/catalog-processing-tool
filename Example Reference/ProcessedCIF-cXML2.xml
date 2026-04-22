@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.2.069/cXML.dtd">
+<cXML timestamp="2026-04-21T19:38:32+10:00" payloadID="1776764312755.267694@catalog-tool">
+  <Header>
+    <From>
+      <Credential domain="NetworkID">
+        <Identity>PREVIEW</Identity>
+      </Credential>
+    </From>
+    <To>
+      <Credential domain="NetworkID">
+        <Identity>PREVIEW</Identity>
+      </Credential>
+    </To>
+    <Sender>
+      <Credential domain="NetworkID">
+        <Identity>PREVIEW</Identity>
+        <SharedSecret/>
+      </Credential>
+      <UserAgent>Catalog Processing Tool 1.0</UserAgent>
+    </Sender>
+  </Header>
+  <Request>
+    <CatalogUploadRequest operation="update">
+      <CatalogName xml:lang="en">Preview</CatalogName>
+      <Description xml:lang="en">Preview</Description>
+      <Attachment>
+        <URL>cid:part2.1776764312755939830@catalog-tool</URL>
+      </Attachment>
+      <AutoPublish enabled="true"/>
+      <Notification/>
+    </CatalogUploadRequest>
+  </Request>
+</cXML>

@@ -1,0 +1,70 @@
+POST https://service-2.ariba.com/ANCatalogProcessor.aw/ad/catalog
+Content-Type: multipart/related; boundary=kdflkajfdksadjfklasdjfkljdfdsfdkf
+
+--kdflkajfdksadjfklasdjfkljdfdsfdkf
+Content-Type: text/xml; charset=UTF-8
+Content-ID: <part1.PCO28.975529413484@sap.com>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.2.023/cXML.dtd">
+<cXML timestamp="2025-11-14T16:56:03-08:00" payloadID="120459569238--1234567899555556789@10.10.83.39">
+    <Header>
+        <From>
+            <Credential domain="NetworkID">
+                <Identity>AN11187788122-T</Identity>
+            </Credential>
+        </From>
+        <To>
+            <Credential domain="NetworkID">
+                <Identity>AN11187786512-T</Identity>
+            </Credential>
+        </To>
+        <Sender>
+            <Credential domain="NetworkID">
+                <Identity>AN11187788122-T</Identity>
+                <SharedSecret>ARIBA123</SharedSecret>
+            </Credential>
+            <UserAgent>Supplier</UserAgent>
+        </Sender>
+    </Header>
+    <Request>
+        <CatalogUploadRequest operation="update">
+            <CatalogName xml:lang="en">CatalogUploadTransaction</CatalogName>
+            <Description xml:lang="en">test.</Description>
+            <Attachment>
+                <URL>cid:part2.PCO28.975529413484@sap.com</URL>
+            </Attachment>
+            <Commodities>
+                <CommodityCode>52</CommodityCode>
+            </Commodities>
+            <AutoPublish enabled="true"/>
+            <Notification>
+                <Email>emily.zhang02@sap.com</Email>
+                <URLPost enabled="true"/>
+            </Notification>
+        </CatalogUploadRequest>
+    </Request>
+</cXML>
+--kdflkajfdksadjfklasdjfkljdfdsfdkf
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: attachment; filename=PunchOutL2TEST.cif
+Content-ID: <part2.PCO28.975529413484@sap.com>
+
+CIF_I_V3.0
+CHARSET:UTF-8
+LOADMODE:F
+CODEFORMAT:UNSPSC
+CURRENCY:CNY
+SUPPLIERID_DOMAIN:NetworkID
+TIMESTAMP:2025/11/9
+ITEMCOUNT:4
+UNUOM:TRUE
+COMMENTS:Any comments can go here.
+FIELDNAMES: Supplier ID, Supplier Part ID,Manufacturer Part ID, Item Description, SPSC Code, Unit Price, Unit of Measure, Lead Time,Manufacturer Name, Supplier URL,Manufacturer URL,Market Price,Currency, PunchOut Enabled,PunchoutLevel, Short Name,Image,Thumbnail
+DATA
+AN01437343792-T,KV8425,,ZKH/震坤行 双头螺栓 8.8级 发黑 M6x35 GB/T899 1个,10160000,0.69,EA,,,https://esp-website-uat.zkh360.com/ariba/login,,,,TRUE,product,双头螺栓,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_KV8425_01.jpg?x-oss-process=style/common_style&timestamp=,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_KV8425_01.jpg?x-oss-process=style/common_style&timestamp=
+AN01437343792-T,MM1983,,ZKH/震坤行 双头螺栓 8.8级 发黑 M22*220 GB/T901 粗牙 1个,10160000,12.49,EA,,,https://esp-website-uat.zkh360.com/ariba/login,,,,TRUE,product,双头螺栓,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_MM1983_01.jpg?x-oss-process=style/common_style&timestamp=,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_MM1983_01.jpg?x-oss-process=style/common_style&timestamp=
+AN01437343792-T,GT6312,,ZKH/震坤行 双头螺栓 8.8级 发黑 M16x95 GB/T901 1盒,10160000,62.44,EA,,,https://esp-website-uat.zkh360.com/ariba/login,,,,TRUE,product,双头螺栓,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_GT6312_01.jpg?x-oss-process=style/common_style&timestamp=,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_GT6312_01.jpg?x-oss-process=style/common_style&timestamp=
+AN01437343792-T,GT6362,,ZKH/震坤行 双头螺栓 8.8级 发黑 M12x80 GB/T901 1盒,10160000,72.07,EA,,,https://esp-website-uat.zkh360.com/ariba/login,,,,TRUE,product,双头螺栓,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_GT6362_01.jpg?x-oss-process=style/common_style&timestamp=,https://pathfinder-privateuat.oss-accelerate.aliyuncs.com/PRODUCT/BIG/BIG_GT6362_01.jpg?x-oss-process=style/common_style&timestamp=
+ENDOFDATA
+--kdflkajfdksadjfklasdjfkljdfdsfdkf--
