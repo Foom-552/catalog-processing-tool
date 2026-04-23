@@ -9,7 +9,6 @@ interface WizardState {
   sessionId: string | null;
   uploadResponse: UploadResponse | null;
   validationResult: ValidationResult | null;
-  validationBuyer: string | null;
   conversionResult: ConversionResult | null;
   aribaResult: AribaPostResult | null;
   selectedOutput: OutputFormat;
@@ -19,7 +18,6 @@ interface WizardState {
   setSessionId: (id: string) => void;
   setUploadResponse: (r: UploadResponse) => void;
   setValidationResult: (r: ValidationResult | null) => void;
-  setValidationBuyer: (buyer: string | null) => void;
   setConversionResult: (r: ConversionResult) => void;
   setAribaResult: (r: AribaPostResult) => void;
   setSelectedOutput: (o: OutputFormat) => void;
@@ -44,7 +42,6 @@ export const useWizardStore = create<WizardState>((set) => ({
   sessionId: null,
   uploadResponse: null,
   validationResult: null,
-  validationBuyer: null,
   conversionResult: null,
   aribaResult: null,
   selectedOutput: 'CIF_TEXT',
@@ -54,7 +51,6 @@ export const useWizardStore = create<WizardState>((set) => ({
   setSessionId: (sessionId) => set({ sessionId }),
   setUploadResponse: (uploadResponse) => set({ uploadResponse }),
   setValidationResult: (validationResult) => set({ validationResult }),
-  setValidationBuyer: (validationBuyer) => set({ validationBuyer, validationResult: null }),
   setConversionResult: (conversionResult) => set({ conversionResult }),
   setAribaResult: (aribaResult) => set({ aribaResult }),
   setSelectedOutput: (selectedOutput) => set({ selectedOutput }),
@@ -64,7 +60,6 @@ export const useWizardStore = create<WizardState>((set) => ({
     sessionId: null,
     uploadResponse: null,
     validationResult: null,
-    validationBuyer: null,
     conversionResult: null,
     aribaResult: null,
     selectedOutput: 'CIF_TEXT',

@@ -1,12 +1,16 @@
 import {
-  BuyerValidationRules, CatalogItem, CifHeaderConfig, RuleSummary,
+  CatalogItem, CifHeaderConfig, RuleSummary,
   ValidationIssue, ValidationResult, ValidationSeverity,
 } from '../types/catalog';
 import { ISO4217_CODES } from '../utils/iso4217';
 import { UNUOM_CODES, ANSI_UOM_CODES } from '../utils/uomCodes';
+import { ISO3166_ALPHA2 } from '../utils/iso3166';
 
 const VALID_RELATED_TYPES = new Set(['accessories', 'mandatory', 'followup', 'sparepart', 'similar']);
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const URL_REGEX = /^https?:\/\//i;
+const BCP47_REGEX = /^[a-zA-Z]{2,3}(-[a-zA-Z]{4})?(-([a-zA-Z]{2}|\d{3}))?$/;
+const CONTROL_CHAR_REGEX = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/;
 
 type RuleResult = { issues: ValidationIssue[]; summary: RuleSummary };
 
@@ -117,6 +121,16 @@ function checkPricePositive(items: CatalogItem[]): RuleResult {
   return { issues, summary: rule('PRICE_POSITIVE', 'Unit Price Non-Negative', issues) };
 }
 
+function checkZeroPrice(items: CatalogItem[]): RuleResult {
+  const issues: ValidationIssue[] = [];
+  items.forEach((item, i) => {
+    if (item.unitPrice === 0) {
+      issues.push(issue('ZERO_PRICE', 'unitPrice', 'Unit Price is zero — some buyers reject zero-price items. Confirm this is intentional.', 'WARNING', '0', i));
+    }
+  });
+  return { issues, summary: rule('ZERO_PRICE', 'Zero Price Check', issues) };
+}
+
 function checkMarketPrice(items: CatalogItem[]): RuleResult {
   const issues: ValidationIssue[] = [];
   items.forEach((item, i) => {
@@ -202,6 +216,47 @@ function checkUomCodes(items: CatalogItem[], useUnuom: boolean): RuleResult {
   return { issues, summary: rule('UOM_CODE', 'UOM Code Valid', issues) };
 }
 
+function checkUrlFormats(items: CatalogItem[]): RuleResult {
+  const issues: ValidationIssue[] = [];
+  items.forEach((item, i) => {
+    if (item.supplierUrl && !URL_REGEX.test(item.supplierUrl)) {
+      issues.push(issue('URL_FORMAT', 'supplierUrl', `Supplier URL must start with http:// or https://, got '${item.supplierUrl}'`, 'ERROR', item.supplierUrl, i));
+    }
+    if (item.manufacturerUrl && !URL_REGEX.test(item.manufacturerUrl)) {
+      issues.push(issue('URL_FORMAT', 'manufacturerUrl', `Manufacturer URL must start with http:// or https://, got '${item.manufacturerUrl}'`, 'ERROR', item.manufacturerUrl, i));
+    }
+  });
+  return { issues, summary: rule('URL_FORMAT', 'URL Format Valid', issues) };
+}
+
+function checkDescriptionChars(items: CatalogItem[]): RuleResult {
+  const issues: ValidationIssue[] = [];
+  items.forEach((item, i) => {
+    if (item.itemDescription && CONTROL_CHAR_REGEX.test(item.itemDescription)) {
+      issues.push(issue('DESCRIPTION_CHARS', 'itemDescription', 'Item Description contains control characters that may cause cXML parsing errors', 'WARNING', item.itemDescription.slice(0, 50), i));
+    }
+  });
+  return { issues, summary: rule('DESCRIPTION_CHARS', 'Description Character Check', issues) };
+}
+
+function checkTerritoryLanguage(items: CatalogItem[]): RuleResult {
+  const issues: ValidationIssue[] = [];
+  items.forEach((item, i) => {
+    if (item.territoryAvailable) {
+      const codes = item.territoryAvailable.split(';').map(c => c.trim()).filter(Boolean);
+      codes.forEach(code => {
+        if (!ISO3166_ALPHA2.has(code.toUpperCase())) {
+          issues.push(issue('TERRITORY_LANGUAGE', 'territoryAvailable', `Territory '${code}' is not a valid ISO 3166-1 alpha-2 country code`, 'WARNING', code, i));
+        }
+      });
+    }
+    if (item.language && !BCP47_REGEX.test(item.language)) {
+      issues.push(issue('TERRITORY_LANGUAGE', 'language', `Language '${item.language}' is not a valid BCP 47 language tag (e.g. en, en-US, fr-FR)`, 'WARNING', item.language, i));
+    }
+  });
+  return { issues, summary: rule('TERRITORY_LANGUAGE', 'Territory & Language Codes', issues) };
+}
+
 // ─── Length Rules ─────────────────────────────────────────────────────────────
 
 function checkLengths(items: CatalogItem[]): RuleResult {
@@ -221,20 +276,29 @@ function checkDuplicatePartIds(items: CatalogItem[]): RuleResult {
   const seen = new Map<string, number[]>();
   items.forEach((item, i) => {
     if (!item.supplierPartId) return;
-    const key = item.supplierPartId.toLowerCase();
+    // SBN uniqueness key: SupplierID + SupplierPartID + SupplierPartAuxiliaryID
+    const key = [
+      (item.supplierId ?? '').toLowerCase(),
+      item.supplierPartId.toLowerCase(),
+      (item.supplierPartAuxiliaryId ?? '').toLowerCase(),
+    ].join('\x00');
     if (!seen.has(key)) seen.set(key, []);
     seen.get(key)!.push(i);
   });
 
   const issues: ValidationIssue[] = [];
-  for (const [partId, rows] of seen.entries()) {
+  for (const [, rows] of seen.entries()) {
     if (rows.length > 1) {
       rows.forEach(i => {
-        issues.push(issue('DUPLICATE_PART_ID', 'supplierPartId', `Duplicate Supplier Part ID '${partId}' found in ${rows.length} rows`, 'WARNING', partId, i));
+        const item = items[i];
+        const label = item.supplierPartAuxiliaryId
+          ? `${item.supplierPartId}/${item.supplierPartAuxiliaryId}`
+          : item.supplierPartId;
+        issues.push(issue('DUPLICATE_PART_ID', 'supplierPartId', `Duplicate item key (SupplierID + PartID + AuxID) '${label}' appears in ${rows.length} rows`, 'WARNING', label, i));
       });
     }
   }
-  return { issues, summary: rule('DUPLICATE_PART_ID', 'No Duplicate Part IDs', issues) };
+  return { issues, summary: rule('DUPLICATE_PART_ID', 'No Duplicate Item Keys', issues) };
 }
 
 function checkRelatedItemTypes(items: CatalogItem[]): RuleResult {
@@ -259,51 +323,9 @@ function checkPunchOutLevel(items: CatalogItem[]): RuleResult {
   return { issues, summary: rule('PUNCHOUT_LEVEL', 'PunchOut Level Specified', issues) };
 }
 
-// ─── Buyer-Specific Rules ─────────────────────────────────────────────────────
-
-function checkBuyerCommodityCodes(items: CatalogItem[], rules: BuyerValidationRules): RuleResult {
-  const issues: ValidationIssue[] = [];
-  if (!rules.hasCommodityFile) {
-    return { issues, summary: rule('BUYER_COMMODITY_CODE', `${rules.buyer} Commodity Codes`, issues) };
-  }
-  items.forEach((item, i) => {
-    if (item.unspscCode && !rules.commodityCodes.has(item.unspscCode.toUpperCase())) {
-      issues.push(issue(
-        'BUYER_COMMODITY_CODE',
-        'unspscCode',
-        `UNSPSC code '${item.unspscCode}' is not in ${rules.buyer}'s approved commodity list`,
-        'WARNING',
-        item.unspscCode,
-        i,
-      ));
-    }
-  });
-  return { issues, summary: rule('BUYER_COMMODITY_CODE', `${rules.buyer} Commodity Codes`, issues) };
-}
-
-function checkBuyerUomCodes(items: CatalogItem[], rules: BuyerValidationRules): RuleResult {
-  const issues: ValidationIssue[] = [];
-  if (!rules.hasUomFile) {
-    return { issues, summary: rule('BUYER_UOM_CODE', `${rules.buyer} UoM Codes`, issues) };
-  }
-  items.forEach((item, i) => {
-    if (item.unitOfMeasure && !rules.uomCodes.has(item.unitOfMeasure.toUpperCase())) {
-      issues.push(issue(
-        'BUYER_UOM_CODE',
-        'unitOfMeasure',
-        `Unit of Measure '${item.unitOfMeasure}' is not in ${rules.buyer}'s approved UoM list`,
-        'WARNING',
-        item.unitOfMeasure,
-        i,
-      ));
-    }
-  });
-  return { issues, summary: rule('BUYER_UOM_CODE', `${rules.buyer} UoM Codes`, issues) };
-}
-
 // ─── Main Validate Function ───────────────────────────────────────────────────
 
-export function validateCatalog(sessionId: string, header: CifHeaderConfig, items: CatalogItem[], buyerRules?: BuyerValidationRules): ValidationResult {
+export function validateCatalog(sessionId: string, header: CifHeaderConfig, items: CatalogItem[]): ValidationResult {
   const allResults: RuleResult[] = [
     checkLoadMode(header),
     checkUnuom(header),
@@ -312,6 +334,7 @@ export function validateCatalog(sessionId: string, header: CifHeaderConfig, item
     checkRequiredFields(items),
     checkUnspscFormat(items, header.codeFormat),
     checkPricePositive(items),
+    checkZeroPrice(items),
     checkMarketPrice(items),
     checkPriceUnitFields(items),
     checkLeadTime(items),
@@ -319,16 +342,14 @@ export function validateCatalog(sessionId: string, header: CifHeaderConfig, item
     checkDateRanges(items),
     checkItemCurrencies(items),
     checkUomCodes(items, header.unuom),
+    checkUrlFormats(items),
+    checkDescriptionChars(items),
+    checkTerritoryLanguage(items),
     checkLengths(items),
     checkDuplicatePartIds(items),
     checkRelatedItemTypes(items),
     checkPunchOutLevel(items),
   ];
-
-  if (buyerRules) {
-    allResults.push(checkBuyerCommodityCodes(items, buyerRules));
-    allResults.push(checkBuyerUomCodes(items, buyerRules));
-  }
 
   const allIssues = allResults.flatMap(r => r.issues);
   const errorCount = allIssues.filter(i => i.severity === 'ERROR').length;

@@ -88,11 +88,3 @@ export interface CxmlVersionInfo {
   source: 'live' | 'fallback';
 }
 
-export interface DocFile {
-  id: string;
-  name: string;
-  folder: string;
-  size: number;
-  category: 'guide' | 'template' | 'commodity' | 'uom' | 'other';
-  extension: string;
-}

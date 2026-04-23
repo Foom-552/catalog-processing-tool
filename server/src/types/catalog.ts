@@ -252,10 +252,3 @@ export interface CxmlVersionInfo {
   source: 'live' | 'fallback';
 }
 
-export interface BuyerValidationRules {
-  buyer: string;
-  commodityCodes: Set<string>;
-  uomCodes: Set<string>;
-  hasCommodityFile: boolean;
-  hasUomFile: boolean;
-}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   AribaPostConfig, AribaPostResult, ConversionResult,
-  CxmlVersionInfo, DocFile, UploadResponse, ValidationResult,
+  CxmlVersionInfo, UploadResponse, ValidationResult,
 } from '../types/catalog';
 
 const api = axios.create({
@@ -18,11 +18,8 @@ export async function uploadFile(file: File): Promise<UploadResponse> {
   return data;
 }
 
-export async function validateCatalog(sessionId: string, buyer?: string | null): Promise<ValidationResult> {
-  const { data } = await api.post<{ sessionId: string; validation: ValidationResult }>('/validate', {
-    sessionId,
-    ...(buyer ? { buyer } : {}),
-  });
+export async function validateCatalog(sessionId: string): Promise<ValidationResult> {
+  const { data } = await api.post<{ sessionId: string; validation: ValidationResult }>('/validate', { sessionId });
   return data.validation;
 }
 
@@ -63,18 +60,4 @@ export function getDownloadUrl(sessionId: string, format: 'cif' | 'cxml'): strin
 
 export function getReportUrl(sessionId: string, format: 'excel' | 'pdf'): string {
   return `/api/report/${sessionId}/${format}`;
-}
-
-export async function fetchBuyers(): Promise<string[]> {
-  const { data } = await api.get<string[]>('/docs/buyers');
-  return data;
-}
-
-export async function fetchBuyerFiles(buyer: string): Promise<DocFile[]> {
-  const { data } = await api.get<DocFile[]>(`/docs/buyers/${encodeURIComponent(buyer)}/files`);
-  return data;
-}
-
-export function getDocFileUrl(buyer: string, fileId: string): string {
-  return `/api/docs/buyers/${encodeURIComponent(buyer)}/files/${encodeURIComponent(fileId)}`;
 }
