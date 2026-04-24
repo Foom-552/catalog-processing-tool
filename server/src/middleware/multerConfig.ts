@@ -23,9 +23,11 @@ const ALLOWED_MIMES = new Set([
   'text/plain',
   'text/csv',
   'application/octet-stream',
+  'application/zip',
+  'application/x-zip-compressed',
 ]);
 
-const ALLOWED_EXTS = new Set(['.xls', '.xlsx', '.cif', '.csv', '.txt']);
+const ALLOWED_EXTS = new Set(['.xls', '.xlsx', '.cif', '.csv', '.txt', '.zip']);
 
 export const upload = multer({
   storage,
@@ -35,7 +37,7 @@ export const upload = multer({
     if (ALLOWED_EXTS.has(ext) || ALLOWED_MIMES.has(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error(`Unsupported file type: ${ext}. Allowed: .xls, .xlsx, .cif, .csv`));
+      cb(new Error(`Unsupported file type: ${ext}. Allowed: .xls, .xlsx, .cif, .csv, .zip`));
     }
   },
 });

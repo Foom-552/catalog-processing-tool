@@ -9,11 +9,20 @@ const api = axios.create({
   timeout: 60000,
 });
 
-export async function uploadFile(file: File): Promise<UploadResponse> {
+export async function uploadFile(
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<UploadResponse> {
   const form = new FormData();
   form.append('file', file);
   const { data } = await api.post<UploadResponse>('/upload', form, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 180_000,
+    onUploadProgress: (evt) => {
+      if (evt.total && onProgress) {
+        onProgress(Math.round((evt.loaded * 100) / evt.total));
+      }
+    },
   });
   return data;
 }
